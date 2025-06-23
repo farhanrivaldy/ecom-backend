@@ -7,15 +7,32 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
+    // function addProduct(Request $req)
+    // {
+    //     $product = new Product;
+    //     $product->name = $req->input('name');
+    //     $product->price = $req->input('price');
+    //     $product->description = $req->input('description');
+    //     $product->file_path = $req->file('file')->store('products');
+    //     $product->save();
+    //     return $req->input();
+    // }
+
     function addProduct(Request $req)
     {
         $product = new Product;
         $product->name = $req->input('name');
         $product->price = $req->input('price');
         $product->description = $req->input('description');
-        $product->file_path = $req->file('file')->store('products');
+
+        if ($req->hasFile('file')) {
+            $product->file_path = $req->file('file')->store('products');
+        } else {
+            $product->file_path = null; // atau default
+        }
+
         $product->save();
-        return $req->input();
+        return response()->json(['success' => true, 'data' => $product]);
     }
 
     function list()
